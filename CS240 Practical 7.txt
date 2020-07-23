@@ -1,0 +1,46 @@
+1)
+inserted:Wed Apr 01 17:42:55 BST 2020
+Removed: Wed Apr 01 17:42:55 BST 2020
+inserted:Wed Apr 01 17:42:58 BST 2020
+Removed: Wed Apr 01 17:42:58 BST 2020
+inserted:Wed Apr 01 17:43:01 BST 2020
+Removed: Wed Apr 01 17:43:01 BST 2020
+inserted:Wed Apr 01 17:43:04 BST 2020
+inserted:Wed Apr 01 17:43:07 BST 2020
+Removed: Wed Apr 01 17:43:04 BST 2020
+inserted:Wed Apr 01 17:43:10 BST 2020
+
+2)
+inserted:Thu Apr 02 15:24:07 BST 2020 producer ID: 321
+inserted:Thu Apr 02 15:24:07 BST 2020 producer ID: 123
+Removed: Thu Apr 02 15:24:07 BST 2020 Consumer ID: 123
+Removed: Thu Apr 02 15:24:07 BST 2020 Consumer ID: 321
+inserted:Thu Apr 02 15:24:10 BST 2020 producer ID: 321
+inserted:Thu Apr 02 15:24:10 BST 2020 producer ID: 123
+Removed: Thu Apr 02 15:24:10 BST 2020 Consumer ID: 321
+Removed: Thu Apr 02 15:24:10 BST 2020 Consumer ID: 123
+inserted:Thu Apr 02 15:24:13 BST 2020 producer ID: 321
+inserted:Thu Apr 02 15:24:13 BST 2020 producer ID: 123
+
+
+
+
+	public static void main (String args[]) {
+		Buffer buffer = new Buffer();
+		int ID=123;
+		int ID2=321;
+		
+		
+		// Create one producer and one consumer process
+		Thread producer1 = new Thread(new Producer(buffer,ID));
+		Thread consumer1 = new Thread(new Consumer(buffer,ID));
+		Thread producer2 = new Thread(new Producer(buffer,ID2));
+		Thread consumer2 = new Thread(new Consumer(buffer,ID2));
+		
+		producer1.start();
+		consumer1.start();
+		producer2.start();
+		consumer2.start();
+	}
+
+

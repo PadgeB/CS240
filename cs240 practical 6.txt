@@ -1,0 +1,11 @@
+Client: Sent greeting-> hello
+Client: Received Reply-> server is alive, how are you?
+
+Creating a socket connection to server on port 6013
+Reading data from Server over socket connection
+Thu Mar 26 14:23:03 GMT 2020
+
+
+Querying rmiregistry for reference to server DateServer
+Performing Remote Method Invocation - Response Below
+Thu Mar 26 14:29:04 GMT 2020

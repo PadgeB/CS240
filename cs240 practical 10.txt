@@ -1,0 +1,48 @@
+import java.net.*;
+import java.io.*;
+import java.util.Date;
+
+public class DateServer {
+
+	public static void main(String[] args) throws IOException {
+		int connectionNumber=0;
+		try {
+			ServerSocket sock = new ServerSocket(6013);
+			while (true) {
+
+				Socket client = sock.accept();
+				connectionNumber++;
+				System.out.println("Main Server: Connection "+connectionNumber+"accepted,starting thread");
+				new WorkerThread(client,connectionNumber).start();
+			}
+		}
+		catch (IOException ioe) {
+			System.err.println(ioe);
+		}
+	}
+}
+
+
+		class WorkerThread extends Thread{
+		private Socket client;
+		private int connectionNumber;
+
+		public WorkerThread(Socket client, int connectionNumber){
+			this.client=client;
+			this.connectionNumber=connectionNumber;
+		}
+			public void run(){
+				Date message;
+
+					try{
+						PrintWriter pout = new PrintWriter(client.getOutputStream(),true);
+						message = new java.util.Date();
+						pout.println(message.toString());
+						System.out.println("Server Thread: Connection "+connectionNumber+" completed ... Closing socket");
+						client.close();
+					}catch (IOException ioe){
+						System.err.println(ioe);
+					}
+				}
+			}
+

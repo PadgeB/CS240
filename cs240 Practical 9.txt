@@ -1,0 +1,158 @@
+1)
+public class Reader extends Thread {
+
+// All threads which use the data being synchronised should
+// share the same DataAccessPolicyManager object to
+// coordinate access. The instance could be passed in to the
+// constructor for the Reader class.
+private DataAccessPolicyManager accessManager;
+
+
+   public Reader (DataAccessPolicyManager accessManager) {
+   	this.accessManager = accessManager;
+   }
+
+   public void run() {
+	while (true) {
+
+	   // Acquire readlock
+	    accessManager.acquireReadLock();
+
+           // Print message "Reader acquired read lock"
+        System.out.println("Reader acquired read lock");
+
+	   // Simulate reading with sleep
+        try{
+            sleep ((int)(Math.random()*20000));
+        }catch (InterruptedException e) {}
+
+
+           // Print message "Reader finished, releasing read lock"
+        System.out.println("Reader finished, releasing read lock");
+
+	   // Release readlock
+        accessManager.releaseReadLock();
+
+	   // Sleep before repeating the loop
+
+        try{
+            sleep ((int)(Math.random()*20000));
+        }catch (InterruptedException e) {}
+
+	}
+
+   }
+}
+
+2)
+public class Writer extends Thread {
+
+// All threads which use the data being synchronised should 
+// share the same DataAccessPolicyManager object to 
+// coordinate access. The instance could be passed in to the 
+// constructor for the Reader class.
+
+private DataAccessPolicyManager accessManager;
+
+
+   public Writer (DataAccessPolicyManager accessManager) {
+   	this.accessManager = accessManager;
+   }
+
+   public void run() {
+	while (true) {
+
+	   // Acquire writelock
+	        accessManager.acquireWriteLock();
+           // Print message "writer acquired write lock"
+        System.out.println("writer acquired write lock");
+	   // Simulate writing with sleep
+
+        try{
+            sleep ((int)(Math.random()*20000));
+        }catch (InterruptedException e) {}
+
+	   // Print message "writer finished, releasing write lock
+        System.out.println("writer finished, releasing write lock");
+	   // Release writelock
+        accessManager.releaseWriteLock();
+
+	   // Sleep before repeating the loop
+
+        try{
+            sleep ((int)(Math.random()*20000));
+        }catch (InterruptedException e) {}
+	}
+
+   }
+}
+
+3)
+public class ReadersWritersSimulation {
+	public static void main (String args[]) {
+		DataAccessPolicyManager accessManager = new DataAccessPolicyManager();
+
+		Reader reader1 = new Reader(accessManager);
+		Reader reader2 = new Reader(accessManager);
+		Reader reader3 = new Reader(accessManager);
+		Writer writer = new Writer(accessManager);
+
+		reader1.start();
+		reader2.start();
+		reader3.start();
+		writer.start();
+	}
+}
+
+4)
+public class DataAccessPolicyManager2
+// This class implements methods to solve the second readers writers problem
+// Writers are prioritised over readers 
+{
+   private int readCount,writeCount;
+   private Semaphore mutexReadCount,mutexWriteCount;
+   private Semaphore wrt,rdr;
+ 
+   public DataAccessPolicyManager2 () {
+      readCount=0;
+      writeCount=0;
+      mutexReadCount=new Semaphore(1);
+      mutexWriteCount=new Semaphore(1);
+      wrt = new Semaphore(1);
+      rdr = new Semaphore(1);
+   }
+
+   public void acquireReadLock() {
+
+      rdr.acquire();
+      mutexReadCount.acquire();
+      readCount=readCount+1;
+      if(readCount==1) wrt.acquire();
+      mutexReadCount.release();
+      rdr.release();
+   }	
+
+   public void releaseReadLock() {
+      mutexReadCount.acquire();
+      --readCount;
+      if(readCount==0)
+         wrt.release();
+      mutexReadCount.release();
+   }
+
+   public void acquireWriteLock() {
+      mutexWriteCount.acquire();
+      writeCount=writeCount+1;
+      if(writeCount==1)rdr.acquire();
+      mutexWriteCount.release();
+      wrt.acquire();
+   }
+ 
+   public void releaseWriteLock() {
+      mutexWriteCount.acquire();
+      writeCount=writeCount-1;
+      if(writeCount==0)rdr.release();
+      mutexWriteCount.release();
+      wrt.release();
+   }
+}
